@@ -1,8 +1,5 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
-import Like from './Like';
-import Comment from './Comment';
-
 
 function Blog() {
 const [blogs, setBlogs]= useState([]);
@@ -30,11 +27,17 @@ const handleLike= (post,user)=>{
 }
 
 const handleComment= (post,user)=>{
+if(document.getElementById("comment").value===""){
+  alert("Please enter a comment");
+  comment.focus();
+}
 
+
+  
   axios.post("http://localhost:9000/api/v1/comments/create",{  
     post,
     user,
-    body:"comment"
+    body:{body:document.getElementById("comment").value}
   })
   .then((response)=>{
     setComment(response.data);
@@ -78,13 +81,30 @@ console.log(blogs.likes);
         <button onClick={() => handleLike(blog._id, "sakshi baklol")}>
   👍 {blog.likes.length}
 </button>
-
-        <button onClick={()=> handleComment(blog._id, "random person")}>&#128172;  {blog.comments.length} </button>
+&nbsp; &nbsp;
+        <button>&#128172;  {blog.comments.length} </button>
+        <div className='flex'>
+    <input type="text" name="" placeholder='Add comment.....' id="comment"  value=""/>
+    <button  onClick={()=> handleComment(blog._id, "random person")}>Add</button>
+    </div>
         <p>
-  {blog.comments.map((items) => (
-    <span key={items.id}>{items.body} <br /></span>
-    
-  ))}
+        <div className="max-w-3xl mx-auto p-4">
+  <div className="bg-white shadow rounded-lg p-6">
+    <h2 className="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">Comments</h2>
+ 
+    <div className="space-y-4">
+      {blog.comments.map((item) => (
+        <div
+          key={item.id}
+          className="p-4 bg-gray-100 rounded-md hover:shadow-lg transition-shadow duration-300"
+        >
+          <p className="text-gray-700">{item.body}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
 </p>
 
         <br />
